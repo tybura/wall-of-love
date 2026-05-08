@@ -19,8 +19,12 @@ npm run preview  # serve dist/ locally
 
 ## Deploy
 
-`main` branch auto-deploys to GitHub Pages via `.github/workflows/deploy.yml`.
-Live URL: https://tybura.github.io/wall-of-love/
+```bash
+npm run deploy   # builds dist/ and force-pushes to the gh-pages branch
+```
+
+GitHub Pages is configured to serve `gh-pages` (path `/`).
+Live URL: <https://tybura.github.io/wall-of-love/>
 
 ## Edit content
 
