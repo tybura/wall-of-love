@@ -22,6 +22,11 @@ pnpm-debug.log*
 .env
 .env.local
 .env.production
+.env.development
+
+# Sanity Studio build artifacts
+studio/.sanity/
+studio/dist/
 
 # Source-of-truth brand book — too large for GitHub (>100 MB hard limit).
 # Kept locally as the canonical Figma file. See design.md for slide-by-slide

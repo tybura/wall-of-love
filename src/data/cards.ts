@@ -2,7 +2,7 @@
 // Image / GIF / video paths are resolved against import.meta.env.BASE_URL
 // (so they work both in dev at "/" and on GitHub Pages under "/wall-of-love/").
 
-export type CardKind = 'quote' | 'image' | 'gif' | 'video';
+export type CardKind = 'quote' | 'image' | 'video';
 
 export interface QuoteCard {
   id: string;
@@ -17,7 +17,7 @@ export interface QuoteCard {
 
 export interface MediaCard {
   id: string;
-  type: 'image' | 'gif' | 'video';
+  type: 'image' | 'video';
   /** Thumbnail / grid src (absolute or BASE-relative path starting with /) */
   thumb: string;
   /** Lightbox-size src (often same as thumb for video / gif) */
@@ -73,7 +73,7 @@ export const cards: Card[] = [
   },
   {
     id: '005',
-    type: 'gif',
+    type: 'image',
     thumb: 'https://picsum.photos/seed/tonik-gif-1/900/900',
     full: 'https://picsum.photos/seed/tonik-gif-1/1400/1400',
     alt: 'Northpine onboarding flow — animated walkthrough',
@@ -113,7 +113,7 @@ export const cards: Card[] = [
   },
   {
     id: '009',
-    type: 'gif',
+    type: 'image',
     thumb: 'https://picsum.photos/seed/tonik-gif-2/800/1200',
     full: 'https://picsum.photos/seed/tonik-gif-2/1200/1800',
     alt: 'Glasswork pricing page — animated tier toggle',

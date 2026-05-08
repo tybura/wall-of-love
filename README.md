@@ -28,11 +28,42 @@ Live URL: <https://tybura.github.io/wall-of-love/>
 
 ## Edit content
 
-- **Cards:** [`src/data/cards.ts`](src/data/cards.ts) — add/remove/rearrange
-  testimonials, screenshots, GIFs, and videos.
-- **Hero copy:** props on `<Hero />` in [`src/pages/index.astro`](src/pages/index.astro).
-- **Tokens:** [`src/styles/global.css`](src/styles/global.css) — colors, type,
-  spacing variables sourced from [`design.md`](design.md).
+The site reads cards from **Sanity** at build time, with a built-in fallback to
+local demo data in [`src/data/cards.ts`](src/data/cards.ts) when Sanity isn't
+configured (so the build never breaks).
+
+### One-time Sanity setup
+
+```bash
+# 1. Install Studio deps + bootstrap a Sanity project (interactive — you'll log in,
+#    pick "Create new project", and choose dataset name "production")
+npm run studio:install
+npm run studio:init
+
+# 2. Copy the project ID it printed into .env.local (at repo root)
+cp .env.example .env.local
+$EDITOR .env.local         # paste PROJECT_ID into both PUBLIC_… and SANITY_STUDIO_…
+
+# 3. Edit content locally
+npm run studio:dev         # http://localhost:3333
+
+# 4. Publish the Studio so anyone you invite can edit content from the browser
+npm run studio:deploy      # picks a hostname like wall-of-love.sanity.studio
+```
+
+After that, editing content in Studio + running `npm run deploy` rebuilds the
+site from Sanity and pushes a new `gh-pages`. (The site won't auto-rebuild on
+Studio changes — that's a one-line addition we can wire up if you want.)
+
+### What lives where
+
+- **Cards (testimonials / images / videos):** Sanity Studio → "Cards"
+- **Clients:** Sanity Studio → "Clients" (referenced by cards)
+- **Local demo cards (used as fallback):** [`src/data/cards.ts`](src/data/cards.ts)
+- **Hero copy:** still in code as props on `<Hero />` in
+  [`src/pages/index.astro`](src/pages/index.astro). Move to Sanity later if needed.
+- **Tokens (colors, type, spacing):** [`src/styles/global.css`](src/styles/global.css),
+  sourced from [`design.md`](design.md).
 
 ## Brand reference
 
