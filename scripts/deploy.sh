@@ -9,9 +9,9 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$PROJECT_DIR/dist"
 DEPLOY_DIR="$(mktemp -d -t wol-deploy-XXXXXX)"
 
-echo "→ Building..."
+echo "→ Building (with BASE_PATH=/wall-of-love for GitHub Pages)..."
 cd "$PROJECT_DIR"
-npm run build
+BASE_PATH=/wall-of-love npm run build
 
 if [ ! -d "$DIST_DIR" ]; then
   echo "✗ dist/ not produced — aborting." >&2

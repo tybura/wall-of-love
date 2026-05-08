@@ -19,11 +19,44 @@ npm run preview  # serve dist/ locally
 
 ## Deploy
 
-```bash
-npm run deploy   # builds dist/ and force-pushes to the gh-pages branch
+### Vercel (primary)
+
+The repo is wired for Vercel via [`vercel.json`](vercel.json). Every push to
+`main` triggers an auto-deploy. To redeploy after a Sanity content edit, push
+an empty commit or hit the deploy hook (see below).
+
+Set in Vercel → Project → Settings → Environment Variables:
+
+```
+PUBLIC_SANITY_PROJECT_ID = eprcy1z1
+PUBLIC_SANITY_DATASET    = production
+SITE_URL                 = https://<your-vercel-subdomain>.vercel.app
 ```
 
-GitHub Pages is configured to serve `gh-pages` (path `/`).
+### Sanity → Vercel auto-rebuild
+
+So content edits in Studio go live without you running anything:
+
+1. Vercel → Project → Settings → **Git** → **Deploy Hooks** → Create one named
+   `sanity-publish` for branch `main`. Copy the URL.
+2. https://www.sanity.io/manage → your project → **API** → **Webhooks** → Add.
+   - URL: paste the Vercel deploy hook URL
+   - Trigger on: Create / Update / Delete
+   - Filter: `_type == "card" || _type == "client"`
+   - HTTP method: POST
+   - Save.
+
+Now hitting **Publish** in Studio triggers a Vercel rebuild within seconds, and
+the live site updates 30–60s later.
+
+### GitHub Pages (legacy fallback)
+
+Still works in case Vercel goes down or you want to keep both:
+
+```bash
+npm run deploy   # builds with BASE_PATH=/wall-of-love and force-pushes gh-pages
+```
+
 Live URL: <https://tybura.github.io/wall-of-love/>
 
 ## Edit content
