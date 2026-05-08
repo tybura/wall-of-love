@@ -9,7 +9,8 @@ const BASE = process.env.BASE_PATH ?? '';
 
 // SITE_URL lets us point canonical/sitemap URLs at the actual production host.
 // Set it in Vercel's project env vars (e.g. https://wall-of-love.vercel.app).
-const SITE = process.env.SITE_URL ?? 'https://tybura.github.io';
+// Use || so an empty-string env var also falls back to the default.
+const SITE = process.env.SITE_URL || 'https://tybura.github.io';
 
 export default defineConfig({
   site: SITE,
