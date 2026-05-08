@@ -95,6 +95,7 @@ body {
 }
 img, video { max-width: 100%; height: auto; display: block; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+[hidden] { display: none !important; }
 a { color: var(--fg); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: opacity var(--motion-fast); }
 a:hover { opacity: 0.7; }
 ::selection { background: var(--fg); color: var(--bg); }

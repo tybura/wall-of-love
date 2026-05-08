@@ -3,15 +3,13 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemas';
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'YOUR_PROJECT_ID';
-const dataset = process.env.SANITY_STUDIO_DATASET || 'production';
-
 export default defineConfig({
   name: 'wall-of-love',
   title: 'Wall of Love',
 
-  projectId,
-  dataset,
+  // Project ID is public (it shows up in every API request from any client).
+  projectId: 'eprcy1z1',
+  dataset: 'production',
 
   plugins: [
     structureTool({

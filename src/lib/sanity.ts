@@ -1,5 +1,5 @@
 import { createClient, type SanityClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+import { createImageUrlBuilder } from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 import type { Card, QuoteCard, MediaCard } from '../data/cards';
 import { cards as fallbackCards } from '../data/cards';
@@ -20,7 +20,7 @@ export const sanityClient: SanityClient | null = isSanityConfigured
     })
   : null;
 
-const builder = sanityClient ? imageUrlBuilder(sanityClient) : null;
+const builder = sanityClient ? createImageUrlBuilder(sanityClient) : null;
 
 /** URL for a Sanity image asset, sized for the grid thumbnail. */
 export function imageThumb(src: SanityImageSource, w = 1200): string {
