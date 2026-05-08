@@ -1,0 +1,36 @@
+---
+export interface Props {
+  eyebrow?: string;
+  title?: string;
+  sub?: string;
+  stats?: { value: string; label: string }[];
+}
+
+const {
+  eyebrow = 'SR006 Wrap Up',
+  title = 'Words from the founders we built with.',
+  sub = 'A two-month highlight reel of testimonials, screens, and shipped work from the visionaries we partnered with. Every quote is real, every screen went live, every founder said yes.',
+  stats = [
+    { value: '42',   label: 'Projects shipped' },
+    { value: '28',   label: 'Founders served'  },
+    { value: '9',    label: 'Countries'        },
+    { value: '100%', label: 'Would work again' },
+  ],
+} = Astro.props;
+---
+<section class="hero">
+  <div class="hero__eyebrow mono"><span>{eyebrow}</span></div>
+
+  <h1 class="display hero__title">{title}</h1>
+
+  <p class="hero__sub">{sub}</p>
+
+  <div class="hero__stats">
+    {stats.map(s => (
+      <div class="hero__stat">
+        <div class="hero__stat-value">{s.value}</div>
+        <div class="hero__stat-label">{s.label}</div>
+      </div>
+    ))}
+  </div>
+</section>

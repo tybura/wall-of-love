@@ -1,0 +1,38 @@
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.local
+.env.production
+
+# Source-of-truth brand book — too large for GitHub (>100 MB hard limit).
+# Kept locally as the canonical Figma file. See design.md for slide-by-slide
+# PNG exports in tonik-branding/.
+tonik brand guidelines _ Slides _ Templates.fig
+
+# Original loose assets — duplicates of files now in public/.
+# (kept locally so the figma file's references still resolve, but git
+# only tracks the public/ copies that ship with the build)
+/Brand Name.svg
+/tonik-symbol.svg
+/Neue Montreal/
+/design-ref/
+/index.html

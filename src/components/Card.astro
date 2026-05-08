@@ -1,0 +1,57 @@
+---
+import type { Card } from '../data/cards';
+
+export interface Props { card: Card; }
+const { card } = Astro.props;
+
+// Resolve BASE-relative paths only when they start with "/"
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const resolve = (path: string) =>
+  path.startsWith('/') ? `${base}${path}` : path;
+---
+{card.type === 'quote' ? (
+  <article class="card card--quote" data-type="quote">
+    <div class="quote">
+      <div class="quote__mark" aria-hidden="true">“</div>
+      <p class="quote__body">{card.body}</p>
+      <div class="quote__attr">
+        <div class="quote__avatar" aria-hidden="true">{card.avatar}</div>
+        <div class="quote__attr-text">
+          <span class="quote__attr-name">{card.name}</span>
+          <span class="quote__attr-role">{card.role}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card__caption">
+      <span class="card__name">{card.client}</span>
+      <span class="card__meta">{card.meta}</span>
+    </div>
+  </article>
+) : (
+  <article
+    class="card"
+    data-type={card.type}
+    data-src={resolve(card.full)}
+    data-caption={card.caption}
+  >
+    <div class="card__media">
+      <span class="card__type-tag">{card.type}</span>
+      {card.type === 'video' ? (
+        <video
+          src={resolve(card.thumb)}
+          muted loop playsinline preload="metadata"
+          aria-label={card.alt}
+        ></video>
+      ) : (
+        <img src={resolve(card.thumb)} alt={card.alt} loading="lazy" />
+      )}
+      <div class="card__play" aria-hidden="true">
+        <span>{card.type === 'video' ? '▶' : '↗'}</span>
+      </div>
+    </div>
+    <div class="card__caption">
+      <span class="card__name">{card.client}</span>
+      <span class="card__meta">{card.meta}</span>
+    </div>
+  </article>
+)}

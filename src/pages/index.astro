@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Wall from '../components/Wall.astro';
+import Footer from '../components/Footer.astro';
+import Lightbox from '../components/Lightbox.astro';
+---
+<Layout>
+  <Header />
+  <main id="top">
+    <Hero />
+    <Wall />
+  </main>
+  <Footer />
+  <Lightbox />
+</Layout>
+
+<script>
+  // ============ Layout switcher (column count) =================
+  const grid = document.getElementById('grid');
+  const layoutBtns = document.querySelectorAll<HTMLButtonElement>('.layout-btn');
+  layoutBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      layoutBtns.forEach(b =>
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      if (grid && btn.dataset.layout) grid.dataset.cols = btn.dataset.layout;
+    });
+  });
+
+  // ============ Filter buttons (currently hidden) ==============
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.card');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.filter;
+      filterBtns.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      cards.forEach(card => {
+        const match = type === 'all' || card.dataset.type === type;
+        card.classList.toggle('is-hidden', !match);
+      });
+    });
+  });
+
+  // ============ Auto-play videos when in view ==================
+  const videos = document.querySelectorAll<HTMLVideoElement>('.card[data-type="video"] video');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const v = entry.target as HTMLVideoElement;
+        if (entry.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      });
+    }, { threshold: 0.4 });
+    videos.forEach(v => io.observe(v));
+  } else {
+    videos.forEach(v => v.play().catch(() => {}));
+  }
+
+  // ============ Lightbox =======================================
+  const lb = document.getElementById('lightbox')!;
+  const lbMedia = document.getElementById('lightboxMedia')!;
+  const lbCaption = document.getElementById('lightboxCaption')!;
+  const lbClose = document.getElementById('lightboxClose')!;
+
+  function openLightbox(card: HTMLElement) {
+    const type = card.dataset.type;
+    const src = card.dataset.src;
+    const caption = card.dataset.caption || '';
+    if (!src) return;
+
+    if (type === 'video') {
+      lbMedia.innerHTML = `<video src="${src}" controls autoplay muted loop playsinline></video>`;
+    } else {
+      lbMedia.innerHTML = `<img src="${src}" alt="${caption}" />`;
+    }
+    lbCaption.textContent = caption;
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden', 'true');
+    lbMedia.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLElement>('.card[data-src]').forEach(card => {
+    card.querySelector<HTMLElement>('.card__media')
+      ?.addEventListener('click', () => openLightbox(card));
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLightbox();
+  });
+
+  // ============ Subtle fade-in on scroll =======================
+  if ('IntersectionObserver' in window) {
+    const fadeIO = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).style.opacity = '1';
+          (entry.target as HTMLElement).style.transform = 'translateY(0)';
+          fadeIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    cards.forEach(c => {
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(12px)';
+      c.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+      fadeIO.observe(c);
+    });
+  }
+</script>

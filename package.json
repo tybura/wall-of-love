@@ -1,0 +1,17 @@
+{
+  "name": "wall-of-love",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tonik — Wall of Love. Curated highlight reel of design work and testimonials.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.5.0"
+  }
+}

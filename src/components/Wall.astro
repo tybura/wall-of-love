@@ -1,0 +1,36 @@
+---
+import { cards } from '../data/cards';
+import Card from './Card.astro';
+---
+<section class="wall" id="wall">
+  <header class="wall__head">
+    <h2 class="wall__title">The work, in their words.</h2>
+
+    <div class="wall__controls">
+      <div class="filters" role="group" aria-label="Filter cards by type" hidden>
+        <button class="filter-btn" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter-btn" data-filter="quote" aria-pressed="false">Quotes</button>
+        <button class="filter-btn" data-filter="image" aria-pressed="false">Screens</button>
+        <button class="filter-btn" data-filter="gif" aria-pressed="false">GIFs</button>
+        <button class="filter-btn" data-filter="video" aria-pressed="false">Videos</button>
+      </div>
+
+      <div class="layout-switch" role="group" aria-label="Wall layout">
+        <span class="mono-micro" style="margin-right: var(--s-2); align-self: center;">Layout</span>
+        <button class="layout-btn" data-layout="2" aria-pressed="false" aria-label="Two columns">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="14"/><rect x="9" y="1" width="6" height="14"/></svg>
+        </button>
+        <button class="layout-btn" data-layout="3" aria-pressed="true" aria-label="Three columns">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="4" height="14"/><rect x="6" y="1" width="4" height="14"/><rect x="11" y="1" width="4" height="14"/></svg>
+        </button>
+        <button class="layout-btn" data-layout="4" aria-pressed="false" aria-label="Four columns">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="3" height="14"/><rect x="5" y="1" width="3" height="14"/><rect x="9" y="1" width="3" height="14"/><rect x="13" y="1" width="2" height="14"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid" id="grid" data-cols="3">
+    {cards.map(card => <Card card={card} />)}
+  </div>
+</section>
