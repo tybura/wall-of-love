@@ -346,8 +346,6 @@ p { margin: 0; }
   width: 100%; height: auto; display: block;
   transition: transform var(--motion), opacity var(--motion);
 }
-.card__media:hover img,
-.card__media:hover video { opacity: 0.92; }
 
 .card__type-tag { display: none; }
 
@@ -402,7 +400,6 @@ p { margin: 0; }
 .card--quote .quote:hover {
   transform: translateY(-2px);
   border-color: var(--border-muted);
-  box-shadow: 0 32px 68px rgba(0, 0, 0, 0.3);
 }
 .quote__mark {
   font-family: var(--font-sans);
