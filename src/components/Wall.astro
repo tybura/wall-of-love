@@ -21,17 +21,17 @@ const cards = await getCards();
         <button class="layout-btn" data-layout="2" aria-pressed="false" aria-label="Two columns">
           <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="14"/><rect x="9" y="1" width="6" height="14"/></svg>
         </button>
-        <button class="layout-btn" data-layout="3" aria-pressed="true" aria-label="Three columns">
+        <button class="layout-btn" data-layout="3" aria-pressed="false" aria-label="Three columns">
           <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="4" height="14"/><rect x="6" y="1" width="4" height="14"/><rect x="11" y="1" width="4" height="14"/></svg>
         </button>
-        <button class="layout-btn" data-layout="4" aria-pressed="false" aria-label="Four columns">
+        <button class="layout-btn" data-layout="4" aria-pressed="true" aria-label="Four columns">
           <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="3" height="14"/><rect x="5" y="1" width="3" height="14"/><rect x="9" y="1" width="3" height="14"/><rect x="13" y="1" width="2" height="14"/></svg>
         </button>
       </div>
     </div>
   </header>
 
-  <div class="grid" id="grid" data-cols="3">
+  <div class="grid" id="grid" data-cols="4">
     {cards.map(card => <Card card={card} />)}
   </div>
 </section>
