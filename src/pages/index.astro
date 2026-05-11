@@ -46,19 +46,23 @@ import Lightbox from '../components/Lightbox.astro';
   // ============ Masonry row-span layout ========================
   // CSS Grid + grid-auto-rows:0 + per-card grid-row-end:span N = true masonry
   // that also supports column spans (wide cards = .is-wide spans 2 columns).
+  //
+  // CRITICAL: never reset spans before measuring. Resetting collapses the grid
+  // to ~0 height for a single frame, which makes the browser clamp the user's
+  // scroll position upward. Since `align-items: start` keeps cards at their
+  // natural content height, getBoundingClientRect() returns the true height
+  // regardless of the currently-applied span — so we can read and write
+  // straight through without any intermediate collapse.
   const layoutMasonry = () => {
     if (!grid) return;
     const rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
     if (rowGap <= 0) return;
     const children = Array.from(grid.children) as HTMLElement[];
-    // Reset all spans so we measure unconstrained heights
-    children.forEach(el => { el.style.gridRowEnd = ''; });
-    // Force reflow once, then read every height in a single pass
-    void grid.offsetHeight;
     children.forEach(el => {
       const h = el.getBoundingClientRect().height;
       if (h <= 0) return;
-      el.style.gridRowEnd = `span ${Math.ceil((h + rowGap) / rowGap)}`;
+      const target = `span ${Math.ceil((h + rowGap) / rowGap)}`;
+      if (el.style.gridRowEnd !== target) el.style.gridRowEnd = target;
     });
   };
 
