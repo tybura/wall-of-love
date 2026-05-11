@@ -17,8 +17,23 @@ import Lightbox from '../components/Lightbox.astro';
 </Layout>
 
 <script>
-  // ============ Layout switcher (column count) =================
+  // ============ Shuffle cards on every visit ===================
+  // Build-time order comes from Sanity (manual `order` field). For the
+  // visitor we randomize so the wall feels fresh on every refresh. Cards
+  // start opacity:0 via CSS, so reordering happens before they're painted.
   const grid = document.getElementById('grid');
+  if (grid) {
+    const cardEls = Array.from(grid.children) as HTMLElement[];
+    for (let i = cardEls.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cardEls[i], cardEls[j]] = [cardEls[j], cardEls[i]];
+    }
+    const frag = document.createDocumentFragment();
+    cardEls.forEach(c => frag.appendChild(c));
+    grid.appendChild(frag);
+  }
+
+  // ============ Layout switcher (column count) =================
   const layoutBtns = document.querySelectorAll<HTMLButtonElement>('.layout-btn');
   layoutBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -99,21 +114,18 @@ import Lightbox from '../components/Lightbox.astro';
   });
 
   // ============ Subtle fade-in on scroll =======================
+  // Cards start opacity:0 in CSS; we just flip the class when they enter view.
   if ('IntersectionObserver' in window) {
     const fadeIO = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          (entry.target as HTMLElement).style.opacity = '1';
-          (entry.target as HTMLElement).style.transform = 'translateY(0)';
+          entry.target.classList.add('is-visible');
           fadeIO.unobserve(entry.target);
         }
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    cards.forEach(c => {
-      c.style.opacity = '0';
-      c.style.transform = 'translateY(12px)';
-      c.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-      fadeIO.observe(c);
-    });
+    cards.forEach(c => fadeIO.observe(c));
+  } else {
+    cards.forEach(c => c.classList.add('is-visible'));
   }
 </script>
