@@ -43,6 +43,63 @@ import Lightbox from '../components/Lightbox.astro';
     });
   });
 
+  // ============ Masonry row-span layout ========================
+  // CSS Grid + grid-auto-rows:0 + per-card grid-row-end:span N = true masonry
+  // that also supports column spans (wide cards = .is-wide spans 2 columns).
+  const layoutMasonry = () => {
+    if (!grid) return;
+    const rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
+    if (rowGap <= 0) return;
+    const children = Array.from(grid.children) as HTMLElement[];
+    // Reset all spans so we measure unconstrained heights
+    children.forEach(el => { el.style.gridRowEnd = ''; });
+    // Force reflow once, then read every height in a single pass
+    void grid.offsetHeight;
+    children.forEach(el => {
+      const h = el.getBoundingClientRect().height;
+      if (h <= 0) return;
+      el.style.gridRowEnd = `span ${Math.ceil((h + rowGap) / rowGap)}`;
+    });
+  };
+
+  // Schedule a layout pass — coalesces multiple triggers in the same frame
+  let rafPending = false;
+  const scheduleLayout = () => {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      rafPending = false;
+      layoutMasonry();
+    });
+  };
+
+  // Initial pass (cards measured as text-only first, will re-run on image load)
+  scheduleLayout();
+
+  // Re-layout once each image/video finishes loading
+  grid?.querySelectorAll<HTMLImageElement | HTMLVideoElement>('img, video').forEach(el => {
+    if (el instanceof HTMLImageElement && el.complete && el.naturalHeight > 0) return;
+    const handler = () => scheduleLayout();
+    el.addEventListener('load', handler, { once: true });
+    el.addEventListener('loadeddata', handler, { once: true });
+    el.addEventListener('error', handler, { once: true });
+  });
+
+  // Re-layout on viewport resize (debounced via rAF)
+  window.addEventListener('resize', scheduleLayout);
+
+  // Re-layout when the layout switcher changes data-cols
+  if (grid) {
+    new MutationObserver(scheduleLayout)
+      .observe(grid, { attributes: true, attributeFilter: ['data-cols'] });
+  }
+
+  // Cards that fade in via the IntersectionObserver below may shift height
+  // when they transition — kick a layout pass on transitionend just in case.
+  grid?.addEventListener('transitionend', e => {
+    if ((e as TransitionEvent).propertyName === 'transform') scheduleLayout();
+  });
+
   // ============ Filter buttons (currently hidden) ==============
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
   const cards = document.querySelectorAll<HTMLElement>('.card');

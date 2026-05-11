@@ -309,11 +309,16 @@ p { margin: 0; }
 .layout-btn:hover { color: var(--fg); }
 .layout-btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 
+/* Masonry-via-grid: column gap is the visual horizontal gap; rows are
+   zero-height implicit tracks whose visual spacing comes from row-gap, and
+   JS sets each card's grid-row-end: span N to match its measured height. */
 .grid {
   display: grid;
-  gap: var(--s-5);
-  grid-auto-flow: dense;   /* backfill gaps with smaller cards = denser, more "alive" packing */
-  align-items: start;      /* cards keep their natural height, don't stretch */
+  column-gap: var(--s-5);
+  row-gap: var(--s-5);
+  grid-auto-rows: 0;
+  grid-auto-flow: dense;
+  align-items: start;
   transition: padding var(--motion);
 }
 .grid[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
