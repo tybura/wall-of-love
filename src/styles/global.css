@@ -362,6 +362,10 @@ p { margin: 0; }
 .card__media img,
 .card__media video {
   width: 100%; height: auto; display: block;
+  /* When width/height attrs are set on the element, browsers compute an
+     implicit aspect-ratio so the box is reserved before pixels load. This
+     line keeps that reservation correct even when CSS forces width:100%. */
+  object-fit: cover;
   transition: transform var(--motion), opacity var(--motion);
 }
 

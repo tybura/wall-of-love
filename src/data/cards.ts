@@ -26,6 +26,10 @@ export interface MediaCard {
   client: string;
   meta: string;
   caption: string;
+  /** Natural width / height in px — used to reserve aspect-ratio space so
+   *  lazy-loaded media doesn't cause layout shift on scroll. */
+  width?: number;
+  height?: number;
 }
 
 export type Card = QuoteCard | MediaCard;

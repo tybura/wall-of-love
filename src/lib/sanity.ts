@@ -44,7 +44,10 @@ const cardsQuery = /* groq */ `*[_type == "card"] | order(order asc) {
   // quote
   body, name, role, avatar,
   // media
-  alt, caption, image, "video": video.asset->url
+  alt, caption, image,
+  "imageWidth":  image.asset->metadata.dimensions.width,
+  "imageHeight": image.asset->metadata.dimensions.height,
+  "video": video.asset->url
 }`;
 
 interface SanityCardRaw {
@@ -60,6 +63,8 @@ interface SanityCardRaw {
   alt?: string;
   caption?: string;
   image?: SanityImageSource;
+  imageWidth?: number;
+  imageHeight?: number;
   video?: string;
 }
 
@@ -94,6 +99,8 @@ function mapToCard(raw: SanityCardRaw, index: number): Card | null {
       client: raw.client,
       meta,
       caption: raw.caption || raw.client,
+      width: raw.imageWidth,
+      height: raw.imageHeight,
     };
     return card;
   }

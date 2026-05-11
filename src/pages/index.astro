@@ -94,11 +94,6 @@ import Lightbox from '../components/Lightbox.astro';
       .observe(grid, { attributes: true, attributeFilter: ['data-cols'] });
   }
 
-  // Cards that fade in via the IntersectionObserver below may shift height
-  // when they transition — kick a layout pass on transitionend just in case.
-  grid?.addEventListener('transitionend', e => {
-    if ((e as TransitionEvent).propertyName === 'transform') scheduleLayout();
-  });
 
   // ============ Filter buttons (currently hidden) ==============
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');

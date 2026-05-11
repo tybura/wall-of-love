@@ -47,9 +47,20 @@ const isWide =
           src={resolve(card.thumb)}
           muted loop playsinline preload="metadata"
           aria-label={card.alt}
+          width={card.width}
+          height={card.height}
+          style={card.width && card.height
+            ? `aspect-ratio: ${card.width} / ${card.height};`
+            : 'aspect-ratio: 16 / 9;'}
         ></video>
       ) : (
-        <img src={resolve(card.thumb)} alt={card.alt} loading="lazy" />
+        <img
+          src={resolve(card.thumb)}
+          alt={card.alt}
+          loading="lazy"
+          width={card.width}
+          height={card.height}
+        />
       )}
       <div class="card__play" aria-hidden="true">
         <span>{card.type === 'video' ? '▶' : '↗'}</span>
