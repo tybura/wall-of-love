@@ -1,8 +1,8 @@
 ---
 import type { Card } from '../data/cards';
 
-export interface Props { card: Card; }
-const { card } = Astro.props;
+export interface Props { card: Card; pinned?: boolean; }
+const { card, pinned = false } = Astro.props;
 
 // Resolve BASE-relative paths only when they start with "/"
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -16,7 +16,11 @@ const isWide =
   (card.type === 'image' && (card.meta || '').trim().toLowerCase() === 'kudos');
 ---
 {card.type === 'quote' ? (
-  <article class="card card--quote" data-type="quote">
+  <article
+    class="card card--quote"
+    data-type="quote"
+    data-pinned={pinned ? 'true' : undefined}
+  >
     <div class="quote">
       <div class="quote__mark" aria-hidden="true">“</div>
       <p class="quote__body">{card.body}</p>
@@ -37,6 +41,7 @@ const isWide =
   <article
     class:list={['card', { 'is-wide': isWide }]}
     data-type={card.type}
+    data-pinned={pinned ? 'true' : undefined}
     data-src={resolve(card.full)}
     data-caption={card.caption}
   >

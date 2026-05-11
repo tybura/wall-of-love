@@ -2,7 +2,22 @@
 import { getCards } from '../lib/sanity';
 import Card from './Card.astro';
 
-const cards = await getCards();
+const allCards = await getCards();
+
+// Cards whose Caption meta matches these values (case-insensitive, trimmed)
+// are pinned to the start of the grid in this exact order. Order here = order
+// on the wall. They're excluded from the random shuffle client-side.
+const PIN_RULES = ['logos carousel', 'kudos - 1'];
+const norm = (s: string | undefined) => (s || '').trim().toLowerCase();
+
+const pinnedSlots = PIN_RULES
+  .map(rule => allCards.find(c => norm(c.meta) === rule))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c));
+
+const pinnedIds = new Set(pinnedSlots.map(c => c.id));
+const rest = allCards.filter(c => !pinnedIds.has(c.id));
+
+const cards = [...pinnedSlots, ...rest];
 ---
 <section class="wall" id="wall">
   <header class="wall__head">
@@ -32,6 +47,6 @@ const cards = await getCards();
   </header>
 
   <div class="grid" id="grid" data-cols="4">
-    {cards.map(card => <Card card={card} />)}
+    {cards.map(card => <Card card={card} pinned={pinnedIds.has(card.id)} />)}
   </div>
 </section>

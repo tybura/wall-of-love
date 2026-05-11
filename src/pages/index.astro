@@ -18,18 +18,22 @@ import Lightbox from '../components/Lightbox.astro';
 
 <script>
   // ============ Shuffle cards on every visit ===================
-  // Build-time order comes from Sanity (manual `order` field). For the
-  // visitor we randomize so the wall feels fresh on every refresh. Cards
-  // start opacity:0 via CSS, so reordering happens before they're painted.
+  // Cards with data-pinned="true" keep their server-rendered position at the
+  // start of the grid (set by Wall.astro). Everything else gets a fresh
+  // Fisher-Yates shuffle so the wall feels different on each refresh.
+  // Cards start opacity:0 via CSS, so reordering happens before paint.
   const grid = document.getElementById('grid');
   if (grid) {
-    const cardEls = Array.from(grid.children) as HTMLElement[];
-    for (let i = cardEls.length - 1; i > 0; i--) {
+    const all = Array.from(grid.children) as HTMLElement[];
+    const pinned = all.filter(c => c.dataset.pinned === 'true');
+    const shuffled = all.filter(c => c.dataset.pinned !== 'true');
+    for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [cardEls[i], cardEls[j]] = [cardEls[j], cardEls[i]];
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     const frag = document.createDocumentFragment();
-    cardEls.forEach(c => frag.appendChild(c));
+    pinned.forEach(c => frag.appendChild(c));
+    shuffled.forEach(c => frag.appendChild(c));
     grid.appendChild(frag);
   }
 
