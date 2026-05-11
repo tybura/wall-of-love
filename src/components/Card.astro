@@ -8,6 +8,12 @@ const { card } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const resolve = (path: string) =>
   path.startsWith('/') ? `${base}${path}` : path;
+
+// Wide cards span 2 grid columns: all videos, plus any image whose
+// Sanity "meta" field is "Kudos" (case-insensitive). Quotes never widen.
+const isWide =
+  card.type === 'video' ||
+  (card.type === 'image' && (card.meta || '').trim().toLowerCase() === 'kudos');
 ---
 {card.type === 'quote' ? (
   <article class="card card--quote" data-type="quote">
@@ -29,7 +35,7 @@ const resolve = (path: string) =>
   </article>
 ) : (
   <article
-    class="card"
+    class:list={['card', { 'is-wide': isWide }]}
     data-type={card.type}
     data-src={resolve(card.full)}
     data-caption={card.caption}

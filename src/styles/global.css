@@ -310,25 +310,26 @@ p { margin: 0; }
 .layout-btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 
 .grid {
-  column-gap: var(--s-5);
+  display: grid;
+  gap: var(--s-5);
+  grid-auto-flow: dense;   /* backfill gaps with smaller cards = denser, more "alive" packing */
+  align-items: start;      /* cards keep their natural height, don't stretch */
   transition: padding var(--motion);
 }
-.grid[data-cols="2"] { column-count: 2; }
-.grid[data-cols="3"] { column-count: 3; }
-.grid[data-cols="4"] { column-count: 4; }
+.grid[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+.grid[data-cols="3"] { grid-template-columns: repeat(3, 1fr); }
+.grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 1024px) {
-  .grid[data-cols="3"], .grid[data-cols="4"] { column-count: 2; }
+  .grid[data-cols="3"], .grid[data-cols="4"] { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
-  .grid[data-cols="2"], .grid[data-cols="3"], .grid[data-cols="4"] { column-count: 1; }
+  .grid[data-cols="2"], .grid[data-cols="3"], .grid[data-cols="4"] { grid-template-columns: 1fr; }
 }
 
 .card {
-  break-inside: avoid;
-  margin-bottom: var(--s-5);
   display: flex;
   flex-direction: column;
-  gap: var(--s-3);
+  gap: var(--s-1);   /* image → caption spacing */
   /* Start invisible — shuffled into final order by JS, then revealed by the
      scroll-fade observer. Prevents flash-of-unshuffled-order on first paint. */
   opacity: 0;
@@ -337,6 +338,13 @@ p { margin: 0; }
 }
 .card.is-hidden { display: none; }
 .card.is-visible { opacity: 1; transform: translateY(0); }
+
+/* Wider cards (videos + images flagged "Kudos") span two columns of the
+   current grid, except when we've collapsed to a single column on mobile. */
+.card.is-wide { grid-column: span 2; }
+@media (max-width: 640px) {
+  .card.is-wide { grid-column: span 1; }
+}
 
 .card__media {
   position: relative;
