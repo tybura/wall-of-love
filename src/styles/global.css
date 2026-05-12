@@ -211,7 +211,7 @@ p { margin: 0; }
   margin-bottom: var(--s-6);
 }
 .hero__title {
-  max-width: 16ch;
+  max-width: 780px;
   margin-bottom: var(--s-6);
 }
 .hero__sub {
