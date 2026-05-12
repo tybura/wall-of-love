@@ -3,6 +3,5 @@
   "framework": "astro",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm ci",
-  "ignoreCommand": "git diff --quiet HEAD~1 -- src public studio/schemas package.json package-lock.json astro.config.mjs"
+  "installCommand": "npm ci"
 }
