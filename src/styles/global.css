@@ -362,12 +362,15 @@ p { margin: 0; }
 .card__media img,
 .card__media video {
   width: 100%; height: auto; display: block;
-  /* When width/height attrs are set on the element, browsers compute an
-     implicit aspect-ratio so the box is reserved before pixels load. This
-     line keeps that reservation correct even when CSS forces width:100%. */
-  object-fit: cover;
   transition: transform var(--motion), opacity var(--motion);
 }
+/* Images get their width/height from Sanity metadata so the container's
+   aspect-ratio matches the file exactly — cover is a no-op for them. */
+.card__media img { object-fit: cover; }
+/* Videos may have an unknown aspect-ratio until their metadata loads (we
+   default to 16/9 inline). `contain` letterboxes them during that window
+   instead of cropping; the JS updates the real aspect-ratio on loadedmetadata. */
+.card__media video { object-fit: contain; background: var(--surface-2); }
 
 .card__type-tag { display: none; }
 

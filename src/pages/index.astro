@@ -93,6 +93,21 @@ import Lightbox from '../components/Lightbox.astro';
     el.addEventListener('error', handler, { once: true });
   });
 
+  // For videos: once metadata is available, set the element's aspect-ratio
+  // to match the actual videoWidth/videoHeight so it stops letterboxing or
+  // cropping. The inline aspect-ratio set in Card.astro is only a fallback
+  // for the brief window before metadata loads.
+  grid?.querySelectorAll<HTMLVideoElement>('.card[data-type="video"] video').forEach(v => {
+    const applyAspect = () => {
+      if (v.videoWidth > 0 && v.videoHeight > 0) {
+        v.style.aspectRatio = `${v.videoWidth} / ${v.videoHeight}`;
+        scheduleLayout();
+      }
+    };
+    if (v.readyState >= 1) applyAspect();
+    else v.addEventListener('loadedmetadata', applyAspect, { once: true });
+  });
+
   // Re-layout on viewport resize (debounced via rAF)
   window.addEventListener('resize', scheduleLayout);
 
