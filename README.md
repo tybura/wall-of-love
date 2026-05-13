@@ -33,21 +33,20 @@ PUBLIC_SANITY_DATASET    = production
 SITE_URL                 = https://<your-vercel-subdomain>.vercel.app
 ```
 
-### Sanity → Vercel auto-rebuild
+### Content updates (ISR — no manual rebuild needed)
 
-So content edits in Studio go live without you running anything:
+The site uses **Incremental Static Regeneration** via `@astrojs/vercel`. Each
+request to `/` is served from Vercel's edge cache; the cache expires after
+5 minutes (`isr.expiration: 300` in [`astro.config.mjs`](astro.config.mjs)) and
+the next request triggers a background re-render that re-fetches from Sanity.
 
-1. Vercel → Project → Settings → **Git** → **Deploy Hooks** → Create one named
-   `sanity-publish` for branch `main`. Copy the URL.
-2. https://www.sanity.io/manage → your project → **API** → **Webhooks** → Add.
-   - URL: paste the Vercel deploy hook URL
-   - Trigger on: Create / Update / Delete
-   - Filter: `_type == "card" || _type == "client"`
-   - HTTP method: POST
-   - Save.
+In practice: publish a card in Sanity Studio → wait up to 5 minutes → it
+appears live. No webhook, no rebuild, no human in the loop.
 
-Now hitting **Publish** in Studio triggers a Vercel rebuild within seconds, and
-the live site updates 30–60s later.
+If you ever need an instant refresh, you can still:
+
+- Push an empty commit to `main` (`git commit --allow-empty -m "trigger redeploy" && git push`)
+- Or trigger a Vercel deploy hook (Project → Settings → Git → Deploy Hooks)
 
 ### GitHub Pages (legacy fallback)
 
