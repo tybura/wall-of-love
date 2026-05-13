@@ -47,6 +47,8 @@ const cards = [...pinnedSlots, ...rest];
   </header>
 
   <div class="grid" id="grid" data-cols="4">
-    {cards.map(card => <Card card={card} pinned={pinnedIds.has(card.id)} />)}
+    {cards.map((card, i) => (
+      <Card card={card} pinned={pinnedIds.has(card.id)} index={i} />
+    ))}
   </div>
 </section>

@@ -1,8 +1,8 @@
 ---
 import type { Card } from '../data/cards';
 
-export interface Props { card: Card; pinned?: boolean; }
-const { card, pinned = false } = Astro.props;
+export interface Props { card: Card; pinned?: boolean; index?: number; }
+const { card, pinned = false, index = 0 } = Astro.props;
 
 // Resolve BASE-relative paths only when they start with "/"
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -14,6 +14,15 @@ const resolve = (path: string) =>
 const isWide =
   card.type === 'video' ||
   (card.type === 'image' && (card.meta || '').trim().toLowerCase() === 'kudos');
+
+// The first N cards in DOM order get high-priority eager loading so the
+// above-the-fold content paints quickly. Everything past that lazy-loads
+// when it nears the viewport, keeping initial download light.
+const EAGER_THRESHOLD = 8;
+const isEager = index < EAGER_THRESHOLD;
+const imgLoading = isEager ? 'eager' : 'lazy';
+const imgPriority = isEager ? 'high' : 'low';
+const videoPreload = isEager ? 'metadata' : 'none';
 ---
 {card.type === 'quote' ? (
   <article
@@ -50,7 +59,8 @@ const isWide =
       {card.type === 'video' ? (
         <video
           src={resolve(card.thumb)}
-          muted loop playsinline preload="metadata"
+          muted loop playsinline
+          preload={videoPreload}
           aria-label={card.alt}
           width={card.width}
           height={card.height}
@@ -62,7 +72,9 @@ const isWide =
         <img
           src={resolve(card.thumb)}
           alt={card.alt}
-          loading="lazy"
+          loading={imgLoading}
+          fetchpriority={imgPriority}
+          decoding="async"
           width={card.width}
           height={card.height}
         />
